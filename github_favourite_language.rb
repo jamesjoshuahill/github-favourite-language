@@ -14,7 +14,7 @@ class GitHubFavouriteLanguage < Thor
   def output(argument)
     @username = argument
     begin
-      puts "#{username}'s favourite language on GitHub is #{favourite_language}."
+      puts "#{username}'s favourite language on GitHub is #{favourite}."
     rescue Octokit::NotFound
       puts "Username not found."
     rescue Octokit::TooManyRequests
@@ -25,6 +25,11 @@ class GitHubFavouriteLanguage < Thor
   end
 
   no_commands do
+
+    def favourite
+      f = favourite_language
+      f == 'nil' ? 'unknown' : f
+    end
 
     def favourite_language
       repositories.inject(Hash.new(0)) do |languages, repository|

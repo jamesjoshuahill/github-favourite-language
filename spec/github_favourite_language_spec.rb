@@ -64,6 +64,13 @@ describe GitHubFavouriteLanguage do
         test_output('Javascript')
       end
 
+      example 'nil' do
+        expect(subject).to receive(:favourite_language).and_return 'nil'
+        output = "#{username}'s favourite language on GitHub is unknown."
+        expect(STDOUT).to receive(:puts).with(output)
+        subject.output(username)
+      end
+
     end
 
     context 'with no public repositories' do
