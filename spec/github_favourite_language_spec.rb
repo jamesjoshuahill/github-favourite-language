@@ -53,7 +53,7 @@ describe GitHubFavouriteLanguage do
 
     end
 
-    context 'prints the favourite language' do
+    context 'print the favourite language' do
 
       example 'Ruby' do
         test_output('Ruby')
@@ -67,7 +67,7 @@ describe GitHubFavouriteLanguage do
 
     context 'when there are no public repositories' do
 
-      it 'outputs no public repositories found message' do
+      it 'print no public repositories found message' do
         expect(subject).to receive(:repositories).with(username).and_return []
         expect(STDOUT).to receive(:puts).with("#{username} has no public repositories.")
         subject.output(username)
@@ -79,9 +79,19 @@ describe GitHubFavouriteLanguage do
 
   context 'when given an invalid GitHub username' do
 
-    it 'outputs user not found message' do
+    it 'print user not found message' do
       expect(subject).to receive(:repositories).and_raise Octokit::NotFound
       expect(STDOUT).to receive(:puts).with('Username not found.')
+      subject.output(username)
+    end
+
+  end
+
+  context 'when too many API requests have been made' do
+
+    it 'print too many API requests message' do
+      expect(subject).to receive(:repositories).and_raise Octokit::TooManyRequests
+      expect(STDOUT).to receive(:puts).with('You have run out of GitHub API requests.')
       subject.output(username)
     end
 

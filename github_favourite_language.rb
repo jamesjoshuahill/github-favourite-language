@@ -18,6 +18,8 @@ class GitHubFavouriteLanguage < Thor
       end
     rescue Octokit::NotFound
       puts "Username not found."
+    rescue Octokit::TooManyRequests
+      puts "You have run out of GitHub API requests."
     end
   end
 
