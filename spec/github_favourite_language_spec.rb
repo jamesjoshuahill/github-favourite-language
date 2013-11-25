@@ -9,7 +9,7 @@ describe GitHubFavouriteLanguage do
   end
 
   def test_output(language)
-    expect(subject).to receive(:favourite_language).with(username).and_return language
+    expect(subject).to receive(:favourite_language).and_return language
     output = "#{username}'s favourite language on GitHub is #{language}."
     expect(STDOUT).to receive(:puts).with(output)
     subject.output(username)
@@ -18,35 +18,36 @@ describe GitHubFavouriteLanguage do
   context 'when given a valid GitHub username' do
 
     it 'gets their public repositories' do
+      expect(subject).to receive(:username).and_return username
       expect(Octokit).to receive(:repositories).with(username).and_return ['repo']
-      expect(subject.repositories(username)).to eq ['repo']
+      expect(subject.repositories).to eq ['repo']
     end
 
     context 'identifies the favourite of' do
 
       it 'one language' do
-        expect(subject).to receive(:repositories).with(username).and_return [repository]
-        expect(subject.favourite_language(username)).to eq 'Ruby'
+        expect(subject).to receive(:repositories).twice.and_return [repository]
+        expect(subject.favourite_language).to eq 'Ruby'
       end
 
       it 'many languages' do
         repositories = [repository('Javascript'), repository, repository, repository('Go')]
-        expect(subject).to receive(:repositories).with(username).and_return repositories
-        expect(subject.favourite_language(username)).to eq 'Ruby'
+        expect(subject).to receive(:repositories).twice.and_return repositories
+        expect(subject.favourite_language).to eq 'Ruby'
       end
 
       context 'two languages' do
 
         example 'of equal sizes' do
           repositories = [repository('Javascript'), repository]
-          expect(subject).to receive(:repositories).with(username).and_return repositories
-          expect(subject.favourite_language(username)).to eq 'Javascript'
+          expect(subject).to receive(:repositories).twice.and_return repositories
+          expect(subject.favourite_language).to eq 'Javascript'
         end
 
         it 'of different sizes' do
           repositories = [repository('Javascript'), repository('Javascript'), repository('Ruby', 250)]
-          expect(subject).to receive(:repositories).with(username).and_return repositories
-          expect(subject.favourite_language(username)).to eq 'Ruby'
+          expect(subject).to receive(:repositories).twice.and_return repositories
+          expect(subject.favourite_language).to eq 'Ruby'
         end
         
       end
@@ -68,7 +69,7 @@ describe GitHubFavouriteLanguage do
     context 'when there are no public repositories' do
 
       it 'print no public repositories found message' do
-        expect(subject).to receive(:repositories).with(username).and_return []
+        expect(subject).to receive(:repositories).and_return []
         expect(STDOUT).to receive(:puts).with("#{username} has no public repositories.")
         subject.output(username)
       end
