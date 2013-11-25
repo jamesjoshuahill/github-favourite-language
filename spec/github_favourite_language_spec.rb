@@ -15,21 +15,11 @@ describe GitHubFavouriteLanguage do
     subject.output(username)
   end
 
-  context 'when given an invalid GitHub username' do
-
-    it 'outputs user not found message' do
-      expect(subject).to receive(:repositories).and_raise Octokit::NotFound
-      expect(STDOUT).to receive(:puts).with('Username not found.')
-      subject.output(username)
-    end
-
-  end
-
   context 'when given a valid GitHub username' do
 
-    it 'gets details of their repositories' do
-      expect(Octokit).to receive(:repositories).with(username).and_return :repo
-      expect(subject.repositories(username)).to eq :repo
+    it 'gets their public repositories' do
+      expect(Octokit).to receive(:repositories).with(username).and_return ['repo']
+      expect(subject.repositories(username)).to eq ['repo']
     end
 
     context 'identifies the favourite of' do
@@ -73,6 +63,26 @@ describe GitHubFavouriteLanguage do
         test_output('Javascript')
       end
 
+    end
+
+    context 'when there are no public repositories' do
+
+      it 'outputs no public repositories found message' do
+        expect(subject).to receive(:repositories).with(username).and_return []
+        expect(STDOUT).to receive(:puts).with("#{username} has no public repositories.")
+        subject.output(username)
+      end
+
+    end
+
+  end
+
+  context 'when given an invalid GitHub username' do
+
+    it 'outputs user not found message' do
+      expect(subject).to receive(:repositories).and_raise Octokit::NotFound
+      expect(STDOUT).to receive(:puts).with('Username not found.')
+      subject.output(username)
     end
 
   end

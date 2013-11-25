@@ -11,8 +11,11 @@ class GitHubFavouriteLanguage < Thor
   desc "-u USERNAME", "Identify the favourite language of a GitHub user"
   def output(username)
     begin
-      favourite = favourite_language(username)
-      puts "#{username}'s favourite language on GitHub is #{favourite}."
+      if favourite = favourite_language(username)
+        puts "#{username}'s favourite language on GitHub is #{favourite}."
+      else
+        puts "#{username} has no public repositories."
+      end
     rescue Octokit::NotFound
       puts "Username not found."
     end
@@ -21,7 +24,9 @@ class GitHubFavouriteLanguage < Thor
   no_commands do
 
     def favourite_language(username)
-      languages = repositories(username).group_by { |repo| repo.language }
+      repositories = repositories(username)
+      return nil if repositories.empty?
+      languages = repositories.group_by { |repository| repository.language }
       languages.each do |language, repositories|
         languages[language] = repositories.map(&:size).inject(:+)
       end
