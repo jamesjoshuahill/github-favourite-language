@@ -66,10 +66,10 @@ describe GitHubFavouriteLanguage do
 
     end
 
-    context 'when there are no public repositories' do
+    context 'with no public repositories' do
 
       it 'print no public repositories found message' do
-        expect(subject).to receive(:repositories).and_return []
+        expect(Octokit).to receive(:repositories).with(username).and_return []
         expect(STDOUT).to receive(:puts).with("#{username} has no public repositories.")
         subject.output(username)
       end

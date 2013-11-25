@@ -28,15 +28,16 @@ class GitHubFavouriteLanguage < Thor
 
     def favourite_language
       languages = repositories.group_by { |repo| repo.language }
-      raise NoPublicRepositories if languages.empty?
       languages.each do |language, repos|
         languages[language] = repos.map(&:size).inject(:+)
       end
-      favourite = languages.max_by { |language, size| size }.first
+      languages.max_by { |language, size| size }.first
     end
 
     def repositories
-      @repositories ||= Octokit.repositories(username)
+      response = Octokit.repositories(username)
+      raise NoPublicRepositories if response.empty?
+      @repositories ||= response
     end
 
   end
