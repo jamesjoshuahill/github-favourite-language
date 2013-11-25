@@ -8,18 +8,24 @@ describe GitHubFavouriteLanguage do
     double :repository, :language => language, :size => size
   end
 
+  def test_output(language)
+    expect(subject).to receive(:favourite_language).with(username).and_return language
+    output = "#{username}'s favourite language on GitHub is #{language}."
+    expect(STDOUT).to receive(:puts).with(output)
+    subject.output(username)
+  end
+
   context 'when given a valid GitHub username' do
 
-    it 'can get their repositories' do
+    it 'gets details of their repositories' do
       expect(Octokit).to receive(:repositories).with(username).and_return :repo
       expect(subject.repositories(username)).to eq :repo
     end
 
-    context 'can identify their favourite of' do
+    context 'identifies the favourite of' do
 
       it 'one language' do
-        repositories = [repository]
-        expect(subject).to receive(:repositories).with(username).and_return repositories
+        expect(subject).to receive(:repositories).with(username).and_return [repository]
         expect(subject.favourite_language(username)).to eq 'Ruby'
       end
 
@@ -43,6 +49,18 @@ describe GitHubFavouriteLanguage do
           expect(subject.favourite_language(username)).to eq 'Ruby'
         end
         
+      end
+
+    end
+
+    context 'prints the favourite language' do
+
+      example 'Ruby' do
+        test_output('Ruby')
+      end
+
+      example 'Javascript' do
+        test_output('Javascript')
       end
 
     end
