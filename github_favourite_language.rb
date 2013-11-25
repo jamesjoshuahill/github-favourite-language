@@ -14,27 +14,21 @@ class GitHubFavouriteLanguage < Thor
   def output(argument)
     @username = argument
     begin
-      output_favourite
+      puts "#{username}'s favourite language on GitHub is #{favourite_language}."
     rescue Octokit::NotFound
       puts "Username not found."
     rescue Octokit::TooManyRequests
       puts "You have run out of GitHub API requests."
+    rescue NoPublicRepositories
+      puts "#{username} has no public repositories."
     end
   end
 
   no_commands do
 
-    def output_favourite
-      if favourite = favourite_language
-        puts "#{username}'s favourite language on GitHub is #{favourite}."
-      else
-        puts "#{username} has no public repositories."
-      end
-    end
-
     def favourite_language
-      return nil if repositories.empty?
       languages = repositories.group_by { |repo| repo.language }
+      raise NoPublicRepositories if languages.empty?
       languages.each do |language, repos|
         languages[language] = repos.map(&:size).inject(:+)
       end
@@ -48,5 +42,7 @@ class GitHubFavouriteLanguage < Thor
   end
 
 end
+
+class NoPublicRepositories < StandardError; end
 
 GitHubFavouriteLanguage.start

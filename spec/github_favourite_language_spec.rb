@@ -26,13 +26,13 @@ describe GitHubFavouriteLanguage do
     context 'identifies the favourite of' do
 
       it 'one language' do
-        expect(subject).to receive(:repositories).twice.and_return [repository]
+        expect(subject).to receive(:repositories).and_return [repository]
         expect(subject.favourite_language).to eq 'Ruby'
       end
 
       it 'many languages' do
         repositories = [repository('Javascript'), repository, repository, repository('Go')]
-        expect(subject).to receive(:repositories).twice.and_return repositories
+        expect(subject).to receive(:repositories).and_return repositories
         expect(subject.favourite_language).to eq 'Ruby'
       end
 
@@ -40,13 +40,13 @@ describe GitHubFavouriteLanguage do
 
         example 'of equal sizes' do
           repositories = [repository('Javascript'), repository]
-          expect(subject).to receive(:repositories).twice.and_return repositories
+          expect(subject).to receive(:repositories).and_return repositories
           expect(subject.favourite_language).to eq 'Javascript'
         end
 
         it 'of different sizes' do
           repositories = [repository('Javascript'), repository('Javascript'), repository('Ruby', 250)]
-          expect(subject).to receive(:repositories).twice.and_return repositories
+          expect(subject).to receive(:repositories).and_return repositories
           expect(subject.favourite_language).to eq 'Ruby'
         end
         
