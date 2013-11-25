@@ -14,8 +14,10 @@ My response
 
 I wrote a command line utility in Ruby using [Thor] that interacts with
 the GitHub API using [Octokit]. The API provides a list of repositories
-and their predominant language. I calculated the favourite by comparing
-the total size of all repositories for each predominant language.
+and their predominant language.
+
+I calculated the favourite language by comparing the total size of all
+repositories for each predominant language.
 
 I used [RSpec] for TDD with [Guard] for continous testing. To run the tests
 `bundle install` and run `rspec`.
@@ -28,7 +30,7 @@ Clone this repository, `bundle install` and run:
 $ ./hub_favourite -u USERNAME
 ```
 
-where USERNAME is the GitHub username you're interested in.
+where `USERNAME` is the GitHub username you're interested in.
 
 ### Example
 
@@ -42,4 +44,3 @@ jamesjoshuahill's favourite language on GitHub is Ruby.
   [Octokit]: http://octokit.github.io/octokit.rb/
   [RSpec]: https://www.relishapp.com/rspec/rspec-core/docs
   [Guard]: http://guardgem.org/
-  
