@@ -8,9 +8,9 @@ describe GitHubFavouriteLanguage do
     double :repository, :language => language, :size => size
   end
 
-  def test_output(language)
+  def test_output(language, language_name = language)
     expect(subject).to receive(:favourite_language).and_return language
-    output = "#{username}'s favourite language on GitHub is #{language}."
+    output = "#{username}'s favourite language on GitHub is #{language_name}."
     expect(STDOUT).to receive(:puts).with(output)
     subject.output(username)
   end
@@ -54,7 +54,7 @@ describe GitHubFavouriteLanguage do
 
     end
 
-    context 'print the favourite language' do
+    context 'prints the favourite language' do
 
       example 'Ruby' do
         test_output('Ruby')
@@ -65,17 +65,14 @@ describe GitHubFavouriteLanguage do
       end
 
       example 'nil' do
-        expect(subject).to receive(:favourite_language).and_return 'nil'
-        output = "#{username}'s favourite language on GitHub is unknown."
-        expect(STDOUT).to receive(:puts).with(output)
-        subject.output(username)
+        test_output('nil', 'unknown')
       end
 
     end
 
     context 'with no public repositories' do
 
-      it 'print no public repositories found message' do
+      it 'prints no public repositories found message' do
         expect(Octokit).to receive(:repositories).with(username).and_return []
         expect(STDOUT).to receive(:puts).with("#{username} has no public repositories.")
         subject.output(username)
@@ -87,7 +84,7 @@ describe GitHubFavouriteLanguage do
 
   context 'when given an invalid GitHub username' do
 
-    it 'print user not found message' do
+    it 'prints user not found message' do
       expect(subject).to receive(:repositories).and_raise Octokit::NotFound
       expect(STDOUT).to receive(:puts).with('Username not found.')
       subject.output(username)
@@ -97,7 +94,7 @@ describe GitHubFavouriteLanguage do
 
   context 'when too many API requests have been made' do
 
-    it 'print too many API requests message' do
+    it 'prints too many API requests message' do
       expect(subject).to receive(:repositories).and_raise Octokit::TooManyRequests
       expect(STDOUT).to receive(:puts).with('You have run out of GitHub API requests.')
       subject.output(username)
