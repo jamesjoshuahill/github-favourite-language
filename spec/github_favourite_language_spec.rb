@@ -1,4 +1,4 @@
-require './github_favourite_language'
+require 'github_favourite_language'
 
 describe GitHubFavouriteLanguage do
 

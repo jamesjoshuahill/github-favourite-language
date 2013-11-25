@@ -1,0 +1,2 @@
+#!/usr/bin/env ruby
+require './lib/github_favourite_language'
