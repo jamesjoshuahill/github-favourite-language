@@ -27,11 +27,10 @@ class GitHubFavouriteLanguage < Thor
   no_commands do
 
     def favourite_language
-      languages = repositories.group_by { |repo| repo.language }
-      languages.each do |language, repos|
-        languages[language] = repos.map(&:size).inject(:+)
-      end
-      languages.max_by { |language, size| size }.first
+      repositories.inject(Hash.new(0)) do |languages, repository|
+        languages[repository.language] += repository.size
+        languages
+      end.max_by { |language, total_size| total_size }.first
     end
 
     def repositories
