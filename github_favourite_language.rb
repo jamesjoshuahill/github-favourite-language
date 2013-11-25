@@ -2,14 +2,6 @@
 require 'thor'
 require 'octokit'
 
-class Array
-
-  def most_common_element
-    self.group_by { |e| e }.values.max_by(&:count).first
-  end
-
-end
-
 class GitHubFavouriteLanguage < Thor
   package_name "GitHub Favourite Language"
 
@@ -18,7 +10,9 @@ class GitHubFavouriteLanguage < Thor
   end
 
   def favourite_language(username)
-    repositories(username).map(&:language).most_common_element
+    languages = repositories(username).group_by { |repo| repo.language }
+    languages.each { |language, repositories| repositories.map!(&:size) }
+    languages.max_by { |language, size| size }.first
   end
 
 end
