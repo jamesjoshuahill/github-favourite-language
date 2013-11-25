@@ -2,14 +2,20 @@
 require 'thor'
 require 'octokit'
 
+Octokit.auto_paginate = true
+
 class GitHubFavouriteLanguage < Thor
   package_name "GitHub Favourite Language"
   map "-u" => "output"
 
   desc "-u USERNAME", "Identify the favourite language of a GitHub user"
   def output(username)
-    favourite = favourite_language(username)
-    puts "#{username}'s favourite language on GitHub is #{favourite}."
+    begin
+      favourite = favourite_language(username)
+      puts "#{username}'s favourite language on GitHub is #{favourite}."
+    rescue Octokit::NotFound
+      puts "Username not found."
+    end
   end
 
   no_commands do

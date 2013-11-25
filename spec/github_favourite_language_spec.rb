@@ -15,6 +15,16 @@ describe GitHubFavouriteLanguage do
     subject.output(username)
   end
 
+  context 'when given an invalid GitHub username' do
+
+    it 'outputs user not found message' do
+      expect(subject).to receive(:repositories).and_raise Octokit::NotFound
+      expect(STDOUT).to receive(:puts).with('Username not found.')
+      subject.output(username)
+    end
+
+  end
+
   context 'when given a valid GitHub username' do
 
     it 'gets details of their repositories' do
