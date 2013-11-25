@@ -15,6 +15,22 @@ describe GitHubFavouriteLanguage do
       expect(subject.repositories(username)).to eq :repo
     end
 
+    context 'can identify their favourite language' do
+
+      it 'for one repository' do
+        repositories = [repository('Ruby')]
+        expect(subject).to receive(:repositories).with(username).and_return repositories
+        expect(subject.favourite_language(username)).to eq 'Ruby'
+      end
+
+      it 'for three repositories' do
+        repositories = [repository('Javascript'), repository('Ruby'), repository('Ruby')]
+        expect(subject).to receive(:repositories).with(username).and_return repositories
+        expect(subject.favourite_language(username)).to eq 'Ruby'
+      end
+
+    end
+
   end
 
 end
